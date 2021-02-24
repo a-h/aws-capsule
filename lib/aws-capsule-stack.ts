@@ -2,6 +2,8 @@ import * as cdk from "@aws-cdk/core";
 import * as ec2 from "@aws-cdk/aws-ec2";
 import * as route53 from "@aws-cdk/aws-route53";
 import * as iam from "@aws-cdk/aws-iam";
+import * as fs from "fs";
+import * as path from "path";
 
 export class AwsCapsuleStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -32,22 +34,7 @@ export class AwsCapsuleStack extends cdk.Stack {
     );
 
     // Install the SSM Agent.
-    const SSM_AGENT_RPM =
-      "https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_arm64/amazon-ssm-agent.rpm";
-    const userData = ec2.UserData.forLinux();
-    userData.addCommands(
-      `sudo yum update -y`,
-      `sudo yum install -y ${SSM_AGENT_RPM}`,
-      "restart amazon-ssm-agent",
-      "sudo amazon-linux-extras install docker",
-      "sudo systemctl enable docker",
-      "sudo service docker start",
-      "sudo usermod -a -G docker ssm-user",
-      // Use https://github.com/linuxserver/docker-docker-compose because Docker don't have an official build on aarch64.
-      // Track at https://github.com/docker/compose/issues/6831
-      `sudo curl -L --fail https://raw.githubusercontent.com/linuxserver/docker-docker-compose/master/run.sh -o /usr/local/bin/docker-compose`,
-      `sudo chmod +x /usr/local/bin/docker-compose`,
-    );
+    const userData = fs.readFileSync(path.join(__dirname, "./user-data.sh"), 'utf8');
 
     // Launch an EC2 instance in the public subnet.
     const instance = new ec2.Instance(this, "geminiInstance", {
@@ -63,7 +50,7 @@ export class AwsCapsuleStack extends cdk.Stack {
       vpcSubnets: {
         subnetType: ec2.SubnetType.PUBLIC,
       },
-      userData: userData,
+      userData: ec2.UserData.custom(userData),
       blockDevices: [
         {
           deviceName: "/dev/sda1",
@@ -76,6 +63,7 @@ export class AwsCapsuleStack extends cdk.Stack {
           },
         },
       ],
+      userDataCausesReplacement: true,
     });
     instance.role.addManagedPolicy(
       iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore")

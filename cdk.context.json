@@ -1,0 +1,11 @@
+{
+  "availability-zones:account=180466524585:region=eu-west-1": [
+    "eu-west-1a",
+    "eu-west-1b",
+    "eu-west-1c"
+  ],
+  "hosted-zone:account=180466524585:domainName=adrianhesketh.com:region=eu-west-1": {
+    "Id": "/hostedzone/Z16GN2T46LUWB0",
+    "Name": "adrianhesketh.com."
+  }
+}

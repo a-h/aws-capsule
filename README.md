@@ -1,20 +1,41 @@
 # Gemini capsule in AWS
 
-Deploy the CDK setup.
+A CDK project to create a Gemini capsule running in AWS.
+
+# Usage
+
+Generate some new private server keys and overwrite the ones in the `./keys` directory.
+
+> Make sure you don't leak the server keys, e.g. by using a public git repository, or it wil be possible to impersonate your server.
+
+```sh
+export DOMAIN_NAME=gemini.example.com
+openssl ecparam -genkey -name secp384r1 -out server.key
+openssl req -new -x509 -sha256 -key ./keys/server.key -out ./keys/server.crt -days 3650 -subj "/C=/ST=/L=/O=/OU=/CN=$DOMAIN_NAME"
+```
+
+Add your content to the `./content` directory.
+
+Deploy the infrastructure:
 
 ```
-aws ssm start-session --target ${INSTANCE_ID}
+npm install
+npx cdk bootstrap
+npx cdk deploy
 ```
 
-This is a blank project for TypeScript development with CDK.
+Your infrastructure will be deployed, and you will see the resulting IP address of the server, and its instance ID.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+> The infrastructure will cost you money. You're responsible for your AWS account spend and you should follow AWS best practice on establishing spending limits etc.
 
-## Useful commands
+# CDK
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+This project uses CDK. If you're not familiar with CDK, you might want to read through the AWS documentation to get started and understand how it works.
+
+# Troubleshooting
+
+You can connect to a terminal session on the box using AWS SSM. This doesn't open up port 22 on the server, but uses an agent installed on the box in the configuration.
+
+```
+aws ssm start-session --target ${INSTANCE_ID} --region=eu-west-1
+```

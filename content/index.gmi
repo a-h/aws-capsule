@@ -1,0 +1,3 @@
+# gemini
+
+You've successfully installed the Gemini server.

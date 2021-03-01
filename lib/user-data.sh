@@ -87,8 +87,8 @@ sudo systemctl start amazon-cloudwatch-agent.service
 cd ~
 
 # Install github.com/a-h/gemini server.
-wget https://github.com/a-h/gemini/releases/download/v0.0.44/gemini_0.0.44_Linux_arm64.tar.gz
-tar -xf gemini_0.0.44_Linux_arm64.tar.gz
+wget https://github.com/a-h/gemini/releases/download/v0.0.49/gemini_0.0.49_Linux_arm64.tar.gz
+tar -xf gemini_0.0.49_Linux_arm64.tar.gz
 sudo mv gemini /usr/bin/
 
 # Create a log directory.

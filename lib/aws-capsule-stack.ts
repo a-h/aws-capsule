@@ -37,17 +37,9 @@ export class AwsCapsuleStack extends cdk.Stack {
       versioned: true,
     });
 
-    // Deploy the static resources from the local filesystem to the bucket.
-    new s3Deployment.BucketDeployment(this, "contentDeployment", {
-      sources: [s3Deployment.Source.asset(path.join(__dirname, "../content"))],
-      destinationKeyPrefix: "content",
-      destinationBucket: bucket,
-    });
-    new s3Deployment.BucketDeployment(this, "keysDeployment", {
-      sources: [s3Deployment.Source.asset(path.join(__dirname, "../keys"))],
-      destinationKeyPrefix: "keys",
-      destinationBucket: bucket,
-    });
+    // Print the target locations.
+    // aws s3 sync ./content s3://BUCKET/content
+    // aws s3 sync ./keys s3://BUCKET/keys
     new cdk.CfnOutput(this, "S3_CONTENT_LOCATION", {
       value: `s3://${bucket.bucketName}/content`,
     });

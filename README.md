@@ -42,6 +42,19 @@ aws ssm start-session --target ${INSTANCE_ID} --region=eu-west-1
 aws s3 sync /srv/gemini/content s3://BUCKET_NAME/content
 ```
 
+You can just send commands if you don't want to logon.
+
+```sh
+aws ssm send-command \
+	--region=eu-west-1 \
+	--instance-ids $INSTANCE_ID \
+	--document-name "AWS-RunShellScript" \
+	--comment "Synchronise content" \
+	--parameters commands="aws s3 sync s3://BUCKET_NAME/content /srv/gemini/" \
+	--output text
+```
+
+
 > The infrastructure will cost you money. You're responsible for your AWS account spend and you should follow AWS best practice on establishing spending limits etc.
 
 # CDK

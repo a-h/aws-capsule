@@ -24,7 +24,23 @@ npx cdk bootstrap
 npx cdk deploy
 ```
 
-Your infrastructure will be deployed, and you will see the resulting IP address of the server, and its instance ID.
+Your infrastructure will be deployed, and you will see the resulting IP address of the server, and its instance ID. You'll also see an S3 bucket. You can copy content to and from the S3 bucket.
+
+The instance has permission to download from the S3 bucket, so you can push your content up to the S3 bucket, and retrieve it from the instance.
+
+From your local machine, you can copy files up:
+
+```
+# Be careful, this can delete files too - keep a backup.
+aws s3 sync ./local_computer/path s3://BUCKET_NAME/content
+```
+
+Then dowload it on the box:
+
+```
+aws ssm start-session --target ${INSTANCE_ID} --region=eu-west-1
+aws s3 sync /srv/gemini/content s3://BUCKET_NAME/content
+```
 
 > The infrastructure will cost you money. You're responsible for your AWS account spend and you should follow AWS best practice on establishing spending limits etc.
 

@@ -37,8 +37,20 @@ export class AwsCapsuleStack extends cdk.Stack {
       versioned: true,
     });
 
+    // Copy the encryption keys to the bucket. You only need to do this once.
+    // If you don't put the keys into this bucket, then the server won't be able to start.
+    new s3Deployment.BucketDeployment(this, "keysDeployment", {
+      sources: [s3Deployment.Source.asset(path.join(__dirname, "../keys"))],
+      destinationKeyPrefix: "keys",
+      destinationBucket: bucket,
+    });
+
     // Print the target locations.
+    // You'll want to copy your content to the content directory.
+    // While it's possible to include the BucketDeployment in the automation, you're going to
+    // deploy content a lot more than you are 
     // aws s3 sync ./content s3://BUCKET/content
+    // If you need to replace your keys, you might want to store them in S3 as a backup.
     // aws s3 sync ./keys s3://BUCKET/keys
     new cdk.CfnOutput(this, "S3_CONTENT_LOCATION", {
       value: `s3://${bucket.bucketName}/content`,

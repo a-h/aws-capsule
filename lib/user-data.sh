@@ -128,6 +128,7 @@ sudo systemctl enable geminid
 sudo tee /etc/logrotate.d/geminid > /dev/null << 'EOF'
 /var/log/geminid/*.txt {
         daily
+        copytruncate
         missingok
         rotate 7
         notifempty

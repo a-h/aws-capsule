@@ -83,6 +83,9 @@ EOF
 sudo systemctl enable amazon-cloudwatch-agent.service
 sudo systemctl start amazon-cloudwatch-agent.service
 
+# Create user.
+sudo useradd geminid
+
 # Start installation.
 cd ~
 
@@ -93,12 +96,15 @@ sudo mv gemini /usr/bin/
 
 # Create a log directory.
 sudo mkdir -p /var/log/geminid
+sudo chown geminid:geminid /var/log/geminid
 
 # Create a content directory.
 sudo mkdir -p /srv/gemini
+sudo chown geminid:geminid /srv/gemini
 
 # Create a config directory.
 sudo mkdir -p /etc/gemini
+sudo chown geminid:geminid /etc/gemini
 
 # Download the server keys.
 sudo aws s3 sync s3://$BUCKET/keys /etc/gemini
@@ -114,6 +120,8 @@ sudo tee /etc/systemd/system/geminid.service > /dev/null << 'EOF'
 Description=geminid
 
 [Service]
+User=geminid
+Group=geminid
 Type=simple
 Restart=always
 WorkingDirectory=/srv/gemini

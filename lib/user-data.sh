@@ -90,8 +90,8 @@ sudo useradd geminid
 cd ~
 
 # Install github.com/a-h/gemini server.
-wget https://github.com/a-h/gemini/releases/download/v0.0.51/gemini_0.0.51_Linux_arm64.tar.gz
-tar -xf gemini_0.0.51_Linux_arm64.tar.gz
+wget https://github.com/a-h/gemini/releases/download/v0.0.66/gemini_0.0.66_Linux_arm64.tar.gz
+tar -xf gemini_0.0.66_Linux_arm64.tar.gz
 sudo mv gemini /usr/bin/
 
 # Create a log directory.
